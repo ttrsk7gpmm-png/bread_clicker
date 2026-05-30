@@ -1,11 +1,158 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bread Clicker</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:url("https://images.unsplash.com/photo-1509440159596-0249088772ff?w=1600") center/cover no-repeat;
+    min-height:100vh;
+    text-align:center;
+    color:white;
+}
+
+.overlay{
+    background:rgba(0,0,0,0.55);
+    min-height:100vh;
+    padding-top:20px;
+}
+
+h1{
+    margin:0;
+    font-size:42px;
+}
+
+#score{
+    font-size:32px;
+    margin:20px;
+}
+
+#bread{
+    font-size:180px;
+    cursor:pointer;
+    user-select:none;
+    transition:0.1s;
+}
+
+#bread:active{
+    transform:scale(0.9);
+}
+
+.panel{
+    width:300px;
+    margin:auto;
+    background:rgba(255,255,255,0.15);
+    border-radius:15px;
+    padding:15px;
+    backdrop-filter:blur(5px);
+}
+
+button{
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    border:none;
+    border-radius:10px;
+    font-size:18px;
+    cursor:pointer;
+}
+
+.footer{
+    margin-top:20px;
+    font-size:22px;
+    font-weight:bold;
+}
+</style>
 </head>
+
 <body>
+
+<div class="overlay">
+
 <h1>🍞 Bread Clicker</h1>
-<p>Моя первая тапалка!</p>
+
+<div id="score">Хлеб: 0</div>
+
+<div id="bread">🍞</div>
+
+<div class="panel">
+<h2>Улучшения</h2>
+
+<button onclick="buyPower()">
+Сила клика (+1) | Цена: <span id="powerCost">10</span>
+</button>
+
+<button onclick="buyAuto()">
+Авто-хлеб (+1/сек) | Цена: <span id="autoCost">50</span>
+</button>
+</div>
+
+<div class="footer">
+TikTok @xleebuusheek
+</div>
+
+</div>
+
+<script>
+let bread = Number(localStorage.getItem("bread")) || 0;
+let clickPower = Number(localStorage.getItem("clickPower")) || 1;
+let autoBread = Number(localStorage.getItem("autoBread")) || 0;
+
+let powerCost = Number(localStorage.getItem("powerCost")) || 10;
+let autoCost = Number(localStorage.getItem("autoCost")) || 50;
+
+function save(){
+    localStorage.setItem("bread", bread);
+    localStorage.setItem("clickPower", clickPower);
+    localStorage.setItem("autoBread", autoBread);
+    localStorage.setItem("powerCost", powerCost);
+    localStorage.setItem("autoCost", autoCost);
+}
+
+function update(){
+    document.getElementById("score").innerText =
+        "Хлеб: " + Math.floor(bread);
+
+    document.getElementById("powerCost").innerText = powerCost;
+    document.getElementById("autoCost").innerText = autoCost;
+
+    save();
+}
+
+document.getElementById("bread").onclick = () => {
+    bread += clickPower;
+    update();
+};
+
+function buyPower(){
+    if(bread >= powerCost){
+        bread -= powerCost;
+        clickPower++;
+        powerCost = Math.floor(powerCost * 1.7);
+        update();
+    }
+}
+
+function buyAuto(){
+    if(bread >= autoCost){
+        bread -= autoCost;
+        autoBread++;
+        autoCost = Math.floor(autoCost * 2);
+        update();
+    }
+}
+
+setInterval(()=>{
+    bread += autoBread;
+    update();
+},1000);
+
+update();
+</script>
+
 </body>
 </html>
